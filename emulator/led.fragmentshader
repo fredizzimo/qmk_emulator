@@ -1,0 +1,48 @@
+/*
+Copyright 2016 Fred Sundvik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#version 330 core
+
+uniform vec3 element_color;
+uniform float intensity;
+uniform vec3 pos;
+in vec2 UV;
+out vec3 color;
+
+const float min_intensity = 0.5 / 255.0;
+const float max_intensity = 2.0;
+const float texture_radius = 256.0;
+const float physical_texture_radius = texture_radius * 4.0;
+// 5mm * 4 pixels
+const float led_radius = 5.0 * 4.0;
+const float r = led_radius / physical_texture_radius;
+const float alpha = 1 / r;
+const float beta = 1 / (r * r);
+
+void main(){
+	float dist = distance(UV, vec2(0.5, 0.5));
+	float att = 1.0 / (1.0 + alpha*dist + beta*dist*dist);
+	float i = att * intensity * max_intensity;
+	if (i > 1.0) {
+		float diff = (i - 1.0) / 3.0;
+		color = vec3(diff, diff, diff + 1);
+	}
+	else {
+		color = vec3(0, 0, i);
+	}	
+	
+}
