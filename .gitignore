@@ -20,7 +20,6 @@ build/
 .vagrant/
 quantum/version.h
 .idea/
-CMakeLists.txt
 .DS_STORE
 
 # Eclipse/PyCharm/Other IDE Settings
