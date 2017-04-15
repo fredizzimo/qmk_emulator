@@ -10,4 +10,4 @@ add_library(visualizer STATIC
 )
 target_include_directories(visualizer PUBLIC ${VISUALIZER_DIR})
 target_link_libraries(visualizer ugfx tmk_core_common)
-target_compile_definitions(visualizer PUBLIC _USE_MATH_DEFINES LCD_BACKLIGHT_ENABLE LCD_ENABLE)
+target_compile_definitions(visualizer PUBLIC _USE_MATH_DEFINES VISUALIZER_ENABLE LCD_BACKLIGHT_ENABLE LCD_ENABLE)
