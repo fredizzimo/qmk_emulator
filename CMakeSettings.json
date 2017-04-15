@@ -9,13 +9,29 @@
         "cmakeCommandArgs": "-T v141_clang_c2",
         "buildCommandArgs": "-m -v:minimal"
       },
-        {
+      {
         "name": "x86-Release",
         "generator": "Visual Studio 15 2017",
         "configurationType" : "Release",
         "buildRoot":  "${env.LOCALAPPDATA}\\CMakeBuild\\${workspaceHash}\\build\\${name}",
         "cmakeCommandArgs": "-T v141_clang_c2",
         "buildCommandArgs": "-m -v:minimal"
-        }
+      },
+      {
+        "name": "Intellisense-Debug",
+        "generator": "Visual Studio 15 2017",
+        "configurationType": "Debug",
+        "buildRoot": "${env.LOCALAPPDATA}\\CMakeBuild\\${workspaceHash}\\build\\${name}",
+        "cmakeCommandArgs": "",
+        "buildCommandArgs": "-m -v:minimal"
+      },
+      {
+        "name": "Intellisense-Release",
+        "generator": "Visual Studio 15 2017",
+        "configurationType" : "Release",
+        "buildRoot":  "${env.LOCALAPPDATA}\\CMakeBuild\\${workspaceHash}\\build\\${name}",
+        "cmakeCommandArgs": "",
+        "buildCommandArgs": "-m -v:minimal"
+      }
     ]
 }
