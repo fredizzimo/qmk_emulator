@@ -1,6 +1,7 @@
 project(emulator)
 get_filename_component(QMK_FIRMWARE "qmk_firmware" ABSOLUTE)
 include_directories("${QMK_FIRMWARE}/keyboards/ergodox/infinity")
+add_definitions(-DEMULATOR)
 add_subdirectory(lib/cmake_wrapper/ugfx)
 add_subdirectory(lib/glad)
 add_subdirectory(qmk_firmware_cmake/tmk_core/common)
