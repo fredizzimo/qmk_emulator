@@ -406,10 +406,11 @@ int main(void) {
 
     uint8_t default_layer_state = 0;
     uint8_t layer_state = 0;
+	uint8_t mods = 0;
     uint8_t leds = 0;
 
     while (!glfwWindowShouldClose(window)) {
-        visualizer_update(default_layer_state, layer_state, leds);
+        visualizer_update(default_layer_state, layer_state, mods, leds);
         gfxSleepMilliseconds(1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glfwPollEvents();
