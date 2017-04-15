@@ -18,3 +18,4 @@ add_executable(emulator
 )
 
 target_link_libraries(emulator visualizer ugfx glad glfw)
+set_target_properties(emulator PROPERTIES LINK_FLAGS "/FORCE")
