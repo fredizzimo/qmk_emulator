@@ -17,6 +17,7 @@ add_executable(emulator
     emulator/emulator_main.c
     emulator/shader.c
 	${QMK_FIRMWARE}/keyboards/ergodox/infinity/visualizer.c
+	${QMK_FIRMWARE}/keyboards/ergodox/infinity/animations.c
 )
 
 target_link_libraries(emulator visualizer serial_link ugfx glad glfw)
