@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "gfx.h"
+#include "config.h"
 #include "visualizer.h"
 #include <math.h>
 #include <stdio.h>
