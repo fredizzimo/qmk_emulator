@@ -98,6 +98,22 @@ GDisplay* get_led_display(void) {
     return led;
 }
 
+bool is_serial_link_master(void) {
+	return true;
+}
+
+uint8_t get_mods(void) {
+	return 0;
+}
+
+bool has_oneshot_mods_timed_out(void) {
+	return false;
+}
+
+uint8_t get_oneshot_mods(void) {
+	return 0;
+}
+
 static void create_keyboard_vertex_buffer(void) {
     glGenBuffers(1, &keyboard_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, keyboard_vertex_buffer);
