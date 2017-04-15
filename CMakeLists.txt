@@ -15,7 +15,9 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_executable(emulator 
     emulator/emulator_main.c
     emulator/shader.c
+	${QMK_FIRMWARE}/keyboards/ergodox/infinity/visualizer.c
 )
+target_compile_definitions(emulator PRIVATE "LCD_BACKLIGHT_ENABLE" "LCD_ENABLE")
 
 target_link_libraries(emulator visualizer ugfx glad glfw)
 set_target_properties(emulator PROPERTIES LINK_FLAGS "/FORCE")
