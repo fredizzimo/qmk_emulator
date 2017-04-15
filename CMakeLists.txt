@@ -5,6 +5,7 @@ add_subdirectory(lib/cmake_wrapper/ugfx)
 add_subdirectory(lib/glad)
 add_subdirectory(qmk_firmware_cmake/tmk_core/common)
 add_subdirectory(qmk_firmware_cmake/visualizer)
+add_subdirectory(qmk_firmware_cmake/serial_link)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -19,5 +20,5 @@ add_executable(emulator
 )
 target_compile_definitions(emulator PRIVATE "LCD_BACKLIGHT_ENABLE" "LCD_ENABLE")
 
-target_link_libraries(emulator visualizer ugfx glad glfw)
+target_link_libraries(emulator visualizer serial_link ugfx glad glfw)
 set_target_properties(emulator PROPERTIES LINK_FLAGS "/FORCE")
