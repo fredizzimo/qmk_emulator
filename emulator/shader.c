@@ -51,7 +51,7 @@ static void print_link_status(GLuint id) {
 }
 
 static GLuint load_shader(const char* path) {
-    FILE* f = fopen( path, "r");
+    FILE* f = fopen( path, "rb");
     fseek( f, 0, SEEK_END );
     int filesize = ftell( f );
     rewind( f );
