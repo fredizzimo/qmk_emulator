@@ -41,6 +41,7 @@ static const float lcd_alpha = 0.85f;
 static const color_t lcd_black_color = RGB2COLOR(0, 0, 0);
 
 static const GLfloat keyboard_vertex_data[] = {
+	300, 300,
     25, 0,
     210, 0,
     242, 7,
@@ -58,6 +59,7 @@ static const GLfloat keyboard_vertex_data[] = {
     25, 543,
     0, 517,
     0, 25,
+	25, 0,
 };
 
 static const float keycap_size = 73.66f; // 7.25 * 2.54 * 4
