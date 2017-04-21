@@ -425,6 +425,7 @@ int main(void) {
     uint8_t layer_state = 0;
 	uint8_t mods = 0;
     uint8_t leds = 0;
+    ergodox_right_led_1_on();
 
     while (!glfwWindowShouldClose(window)) {
         visualizer_update(default_layer_state, layer_state, mods, leds);
@@ -573,10 +574,7 @@ static void draw_keycaps(void) {
     draw_triangles(key_inner_vertex_buffer, key_inner_vertex_buffer_size, keycap_inner_color);
 }
 
-static color_t multiply_color(color_t color, float multiplier) {
-    float r = RED_OF(color) * multiplier;
-    float g = GREEN_OF(color) * multiplier;
-    float b = BLUE_OF(color) * multiplier;
+static color_t clip_color(float r, float g, float b) {
     float m = r > g ? r : g;
     m = m > b ? m : b;
     if (m > 255.0f) {
@@ -588,22 +586,127 @@ static color_t multiply_color(color_t color, float multiplier) {
     return RGB2COLOR((int)r, (int)g, (int)b);
 }
 
+static color_t multiply_color(color_t color, float multiplier) {
+    float r = RED_OF(color) * multiplier;
+    float g = GREEN_OF(color) * multiplier;
+    float b = BLUE_OF(color) * multiplier;
+	return clip_color(r, g, b);
+}
+
+static color_t add_color(color_t color1, color_t color2) {
+    float r = RED_OF(color1) + RED_OF(color2);
+    float g = GREEN_OF(color1) + GREEN_OF(color2);
+    float b = BLUE_OF(color1) + BLUE_OF(color2);
+	return clip_color(r, g, b);
+}
+
+static void convert_rgb_to_hsi(float r, float g, float b, float* h, float* s, float* i) {
+	float min = fminf(fminf(r, g), b);
+	float max = fmaxf(fmaxf(r, g), b);
+    float diff = max - min;
+	*i = r + g + b;
+	if(diff == 0) {
+		*h = 0.0;
+		*s = 0.0;
+	}
+	else {
+		if(max==r) {
+			*h = fmodf(((g - b) / diff), 6.0f);
+		}
+		else if(max == g) {
+			*h = (b - r) / diff + 2.0f;
+		}
+		else if(max==b) {
+			*h = (r - g) / diff + 4.0f;
+		}
+		*h *= 60.0f;
+		*s = 1.0f - (min / *i);
+	}
+}
+
+static void convert_hsv_to_rgb(float h, float s, float v, float* r, float* g, float* b) {
+    double      hh, p, q, t, ff;
+    long        i;
+
+    hh = h;
+    if(hh >= 360.0) hh = 0.0;
+    hh /= 60.0;
+    i = (long)hh;
+    ff = hh - i;
+    p = v * (1.0 - s);
+    q = v * (1.0 - (s * ff));
+    t = v * (1.0 - (s * (1.0 - ff)));
+
+    switch(i) {
+    case 0:
+        *r = v;
+        *g = t;
+        *b = p;
+        break;
+    case 1:
+        *r = q;
+        *g = v;
+        *b = p;
+        break;
+    case 2:
+        *r = p;
+        *g = v;
+        *b = t;
+        break;
+
+    case 3:
+        *r = p;
+        *g = q;
+        *b = v;
+        break;
+    case 4:
+        *r = t;
+        *g = p;
+        *b = v;
+        break;
+    case 5:
+    default:
+        *r = v;
+        *g = p;
+        *b = q;
+        break;
+    }
+}
+
 static void draw_lcd(void) {
     // The whole transparent area
-    draw_triangles(lcd_vertex_buffer, 6,
-            multiply_color(lcd_base_color, lcd_transparent_color_multiplier));
+	float r = RED_OF(lcd_base_color) / 255.0f;
+	float g = GREEN_OF(lcd_base_color) / 255.0f;
+	float b = BLUE_OF(lcd_base_color) / 255.0f;
+	float h, s, i;
+	convert_rgb_to_hsi(r, g, b, &h, &s, &i);
+
+	// Scale with the current brightness, so we don't emulate brightness control here
+	float lcd_brightness = lcd_get_backlight_brightness() / 255.0f;
+	i /= lcd_brightness;
+
+	// Let the intensity vary between the base intensity and 1.0
+	i *= (1.0f - lcd_base_intensity);
+	i = lcd_base_intensity + i;
+	i = fminf(i, 1.0f);
+
+	convert_hsv_to_rgb(h, s, i, &r, &g, &b);
+	color_t color = RGB2COLOR((uint8_t)(r * 255.0f), (uint8_t)(g * 255.0f), (uint8_t)(b * 255.0f));
+	color_t color_with_alpha = multiply_color(color, 1.0f - lcd_alpha);
+
+	draw_triangles(lcd_vertex_buffer, 6, color);
     // The LCD lit area
     draw_triangles_with_offset(lcd_vertex_buffer, 6, 6,
-            multiply_color(lcd_base_color, lcd_lit_color_multiplier));
+            add_color(color_with_alpha, lcd_lit_color));
     // The black box at the bottom
     draw_triangles_with_offset(lcd_vertex_buffer, 6, 12, lcd_black_color);
     // The black border
     draw_triangles_with_offset(lcd_vertex_buffer, 6, 18, lcd_black_color);
     // The LCD lit area again, but inside the black border only
     draw_triangles_with_offset(lcd_vertex_buffer, 6, 24,
-            multiply_color(lcd_base_color, lcd_lit_color_multiplier));
+            add_color(color_with_alpha, lcd_lit_color));
     draw_lcd_texture(30,
-            multiply_color(lcd_base_color, lcd_pixel_area_color_multiplier));
+            add_color(color_with_alpha, lcd_pixel_area_color));
 }
 
 static void draw_leds(void) {

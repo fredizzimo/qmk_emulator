@@ -30,13 +30,14 @@ static const point keyboard_pos = {10, 10};
 
 static const color_t background_color = RGB2COLOR(0x8B, 0x45, 0x13);
 
-static color_t main_keyboard_area_color = RGB2COLOR(150, 150, 150);
+static color_t main_keyboard_area_color = RGB2COLOR(196, 195, 192);
 static const color_t keycap_outer_color = RGB2COLOR(0, 0, 0);
 static const color_t keycap_inner_color = RGB2COLOR(3, 3, 3);
 
-static const float lcd_transparent_color_multiplier = 20.0f;
-static const float lcd_lit_color_multiplier = 1.0f;
-static const float lcd_pixel_area_color_multiplier = 0.7f;
+static const float lcd_base_intensity = 150.0f / 255.0f;
+static const color_t lcd_lit_color = RGB2COLOR(87, 92, 78);
+static const color_t lcd_pixel_area_color = RGB2COLOR(82, 87, 74);
+static const float lcd_alpha = 0.85f;
 static const color_t lcd_black_color = RGB2COLOR(0, 0, 0);
 
 static const GLfloat keyboard_vertex_data[] = {
