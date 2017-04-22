@@ -3,6 +3,13 @@ cmake_minimum_required(VERSION 3.6)
 get_filename_component(QMK_FIRMWARE "qmk_firmware" ABSOLUTE)
 include_directories("${QMK_FIRMWARE}/keyboards/ergodox/infinity")
 add_definitions(-DEMULATOR)
+
+# There's a debug in the CMAKE, which makes the debuging not work
+# So fix that
+if (${MSVC_IDE} AND "${CMAKE_VS_PLATFORM_TOOLSET}" MATCHES "clang")
+	add_compile_options("-g2;-gdwarf-2")
+endif()
+
 add_subdirectory(lib/cmake_wrapper/ugfx)
 add_subdirectory(lib/glad)
 add_subdirectory(qmk_firmware_cmake/tmk_core/common)
