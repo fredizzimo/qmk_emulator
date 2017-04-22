@@ -158,5 +158,38 @@ LLDSPEC	color_t gdisp_lld_get_pixel_color(GDisplay *g) {
     }
 #endif
 
+#ifdef GDISP_HARDWARE_BITFILLS
+#ifdef GDISP_PIXELFORMAT_MONO
+LLDSPEC void gdisp_lld_blit_area(GDisplay *g) {
+    uint8_t* buffer = (uint8_t*)g->p.ptr;
+    int linelength = g->p.cx;
+    for (int i = 0; i < g->p.cy; i++) {
+        unsigned dstx = g->p.x;
+        unsigned dsty = g->p.y + i;
+        unsigned srcx = g->p.x1;
+        unsigned srcy = g->p.y1 + i;
+        unsigned srcbit = srcy * g->p.x2 + srcx;
+        for(int j=0; j < linelength; j++) {
+            uint8_t src = buffer[srcbit / 8];
+            uint8_t bit = 7-(srcbit % 8);
+            uint8_t bitset = (src >> bit) & 1;
+            color_t color;
+            if (bitset) {
+                color = RGB2COLOR(255, 255, 255);
+            }
+            else {
+                color = RGB2COLOR(0, 0, 0);
+            }
+            ((pixmap *)(g)->priv)->pixels[i * g->g.Width + j] = color;
+			dstx++;
+            srcbit++;
+        }
+    }
+}
+#else
+# Blitting not implemented for this pixel format
+#endif
+#endif
+
 
 #endif /* EMULATOR_EMULATOR_DRIVER_IMPL_H_ */
