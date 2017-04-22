@@ -1,13 +1,16 @@
 project(emulator)
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.2)
 get_filename_component(QMK_FIRMWARE "qmk_firmware" ABSOLUTE)
 include_directories("${QMK_FIRMWARE}/keyboards/ergodox/infinity")
 add_definitions(-DEMULATOR)
+set (CMAKE_C_STANDARD 99)
 
 # There's a debug in the CMAKE, which makes the debuging not work
 # So fix that
-if (${MSVC_IDE} AND "${CMAKE_VS_PLATFORM_TOOLSET}" MATCHES "clang")
-	add_compile_options("-g2;-gdwarf-2")
+if (${MSVC_IDE})
+	if ("${CMAKE_VS_PLATFORM_TOOLSET}" MATCHES "clang")
+		add_compile_options("-g2;-gdwarf-2")
+	endif()
 endif()
 
 add_subdirectory(lib/cmake_wrapper/ugfx)
@@ -32,4 +35,6 @@ add_executable(emulator
 
 target_link_libraries(emulator visualizer serial_link emulator_gdisp ugfx glad glfw)
 target_include_directories(emulator PRIVATE .)
-set_target_properties(emulator PROPERTIES LINK_FLAGS "/FORCE")
+if (${MSVC_IDE})
+	set_target_properties(emulator PROPERTIES LINK_FLAGS "/FORCE")
+endif()
