@@ -15,13 +15,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#version 330 core
+#version 120
 
 uniform vec3 element_color;
 uniform float intensity;
 uniform vec3 pos;
 in vec2 UV;
-out vec3 color;
 
 const float min_intensity = 0.5 / 255.0;
 const float max_intensity = 2.0;
@@ -39,10 +38,10 @@ void main(){
 	float i = att * intensity * max_intensity;
 	if (i > 1.0) {
 		float diff = (i - 1.0) / 3.0;
-		color = vec3(diff, diff, diff + 1);
+		gl_FragColor = vec4(diff, diff, diff + 1, 1.0);
 	}
 	else {
-		color = vec3(0, 0, i);
+		gl_FragColor = vec4(0, 0, i, 1.0);
 	}	
 	
 }

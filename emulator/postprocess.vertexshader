@@ -15,11 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#version 330 core
+#version 120
 
 in vec2 v_coord;
 uniform sampler2D fbo_texture;
-out vec2 f_texcoord;
+varying vec2 f_texcoord;
 
 void main(void) {
 	gl_Position = vec4(v_coord, 0.0, 1.0);

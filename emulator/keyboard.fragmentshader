@@ -15,11 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#version 330 core
+#version 120
 
 uniform vec3 element_color;
-out vec3 color;
 
 void main(){
-	color = element_color;
+	gl_FragColor.rgb = element_color;
+	gl_FragColor.a = 1.0;
 }

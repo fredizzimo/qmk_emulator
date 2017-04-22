@@ -15,21 +15,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#version 330 core
+#version 120
 
 uniform vec3 element_color;
 in vec2 UV;
-out vec4 color;
 
 uniform sampler2D texture_sampler;
 
 vec3 tolerance = vec3(0.01, 0.01, 0.01);
 
 void main(){
-	vec3 texture_color = texture( texture_sampler, UV ).rgb;
+	vec3 texture_color = texture2D( texture_sampler, UV ).rgb;
 	float alpha = 1.0f;
 	if (all(lessThan(abs(texture_color - element_color), tolerance))) {
 		alpha = 0.0;
 	}
-	color = vec4(texture_color, alpha);
+	gl_FragColor = vec4(texture_color, alpha);
 }

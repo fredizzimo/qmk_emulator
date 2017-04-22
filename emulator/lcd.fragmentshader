@@ -15,17 +15,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#version 330 core
+#version 120
 
 uniform vec3 element_color;
 in vec2 UV;
-out vec3 color;
 
 uniform sampler2D texture_sampler;
 
 void main(){
-	vec3 texture_color = texture( texture_sampler, UV ).rgb;
+	vec3 texture_color = texture2D( texture_sampler, UV ).rgb;
 	float luma = texture_color.x + texture_color.y + texture_color.z;
 	luma /= 3.0;
-	color = element_color * luma;
+	gl_FragColor.rgb = element_color * luma;
+	gl_FragColor.a = 1.0;
 }

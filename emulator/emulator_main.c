@@ -318,13 +318,13 @@ static void create_frame_buffer(void) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, screen_dimensions.x, screen_dimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F_ARB, screen_dimensions.x, screen_dimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    glGenFramebuffers(1, &fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_texture, 0);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glGenFramebuffersEXT(1, &fbo);
+    glBindFramebufferEXT(GL_EXT_framebuffer_object, fbo);
+    glFramebufferTexture2DEXT(GL_EXT_framebuffer_object, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbo_texture, 0);
+    glBindFramebufferEXT(GL_EXT_framebuffer_object, 0);
 
     GLfloat fbo_vertices_data[] = {
       -1, -1,
@@ -378,9 +378,9 @@ int main(void) {
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(EXIT_FAILURE);
-    glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 1);
+    //glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint (GLFW_SRGB_CAPABLE, TRUE);
     window = glfwCreateWindow(screen_dimensions.x, screen_dimensions.y,
             "Ergodox Emulator", NULL, NULL);
@@ -781,8 +781,8 @@ void draw_debug(void) {
 }
 
 void draw_post_process(void) {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glEnable(GL_FRAMEBUFFER_SRGB);
+    glBindFramebufferEXT(GL_EXT_framebuffer_object, 0);
+    glEnable(GL_EXT_framebuffer_sRGB);
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -812,8 +812,8 @@ void draw_emulator(void) {
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glDisable(GL_FRAMEBUFFER_SRGB);
+    glBindFramebufferEXT(GL_EXT_framebuffer_object, fbo);
+    glDisable(GL_EXT_framebuffer_sRGB);
     //glEnable(GL_FRAMEBUFFER_SRGB);
     glClearColor(
        RED_OF(background_color) / 255.0f,
