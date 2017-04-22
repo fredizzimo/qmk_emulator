@@ -322,9 +322,9 @@ static void create_frame_buffer(void) {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glGenFramebuffersEXT(1, &fbo);
-    glBindFramebufferEXT(GL_EXT_framebuffer_object, fbo);
-    glFramebufferTexture2DEXT(GL_EXT_framebuffer_object, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbo_texture, 0);
-    glBindFramebufferEXT(GL_EXT_framebuffer_object, 0);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbo_texture, 0);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
     GLfloat fbo_vertices_data[] = {
       -1, -1,
@@ -781,7 +781,7 @@ void draw_debug(void) {
 }
 
 void draw_post_process(void) {
-    glBindFramebufferEXT(GL_EXT_framebuffer_object, 0);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     glEnable(GL_EXT_framebuffer_sRGB);
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -812,7 +812,7 @@ void draw_emulator(void) {
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
     }
-    glBindFramebufferEXT(GL_EXT_framebuffer_object, fbo);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
     glDisable(GL_EXT_framebuffer_sRGB);
     //glEnable(GL_FRAMEBUFFER_SRGB);
     glClearColor(
@@ -834,7 +834,6 @@ void draw_emulator(void) {
 
     draw_leds();
     double after_draw_leds = glfwGetTime();
-
     double total_time = after_draw_leds - start_draw;
 #ifdef DISPLAY_FPS
     gdispSetDisplay(debug_display);
