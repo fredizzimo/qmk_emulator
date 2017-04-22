@@ -87,7 +87,7 @@ LLDSPEC void gdisp_lld_draw_pixel(GDisplay *g) {
 #endif
     // Make sure that the color is converted to the right format
     color_t color = gdispColor2Native(g->p.color);
-    color = gdispNative2Color(g->p.color);
+    color = color ? White : Black;
 
     ((pixmap *)(g)->priv)->pixels[pos] = color;
 }
