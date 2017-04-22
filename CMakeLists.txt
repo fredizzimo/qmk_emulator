@@ -1,4 +1,5 @@
 project(emulator)
+cmake_minimum_required(VERSION 3.6)
 get_filename_component(QMK_FIRMWARE "qmk_firmware" ABSOLUTE)
 include_directories("${QMK_FIRMWARE}/keyboards/ergodox/infinity")
 add_definitions(-DEMULATOR)
@@ -7,6 +8,7 @@ add_subdirectory(lib/glad)
 add_subdirectory(qmk_firmware_cmake/tmk_core/common)
 add_subdirectory(qmk_firmware_cmake/visualizer)
 add_subdirectory(qmk_firmware_cmake/serial_link)
+add_subdirectory(drivers/gdisp)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -19,10 +21,8 @@ add_executable(emulator
     emulator/shader.c
 	${QMK_FIRMWARE}/keyboards/ergodox/infinity/visualizer.c
 	${QMK_FIRMWARE}/keyboards/ergodox/infinity/animations.c
-	drivers/gdisp/emulator_lcd/emulator_lcd.c
-	drivers/gdisp/emulator_led/emulator_led.c
 )
 
-target_link_libraries(emulator visualizer serial_link ugfx glad glfw)
+target_link_libraries(emulator visualizer serial_link emulator_gdisp ugfx glad glfw)
 target_include_directories(emulator PRIVATE .)
 set_target_properties(emulator PROPERTIES LINK_FLAGS "/FORCE")

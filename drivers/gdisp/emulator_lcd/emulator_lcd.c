@@ -7,4 +7,4 @@
 #define GDISP_SCREEN_HEIGHT		        32
 #define ROTATE_180_IS_FLIP
 
-#include "emulator/emulator_driver_impl.h"
+#include "emulator_driver_impl.h"
