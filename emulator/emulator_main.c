@@ -99,19 +99,19 @@ GDisplay* get_led_display(void) {
 }
 
 bool is_serial_link_master(void) {
-	return true;
+    return true;
 }
 
 uint8_t get_mods(void) {
-	return 0;
+    return 0;
 }
 
 bool has_oneshot_mods_timed_out(void) {
-	return false;
+    return false;
 }
 
 uint8_t get_oneshot_mods(void) {
-	return 0;
+    return 0;
 }
 
 static void create_keyboard_vertex_buffer(void) {
@@ -423,7 +423,7 @@ int main(void) {
 
     uint8_t default_layer_state = 0;
     uint8_t layer_state = 0;
-	uint8_t mods = 0;
+    uint8_t mods = 0;
     uint8_t leds = 0;
     ergodox_right_led_1_on();
 
@@ -590,38 +590,38 @@ static color_t multiply_color(color_t color, float multiplier) {
     float r = RED_OF(color) * multiplier;
     float g = GREEN_OF(color) * multiplier;
     float b = BLUE_OF(color) * multiplier;
-	return clip_color(r, g, b);
+    return clip_color(r, g, b);
 }
 
 static color_t add_color(color_t color1, color_t color2) {
     float r = RED_OF(color1) + RED_OF(color2);
     float g = GREEN_OF(color1) + GREEN_OF(color2);
     float b = BLUE_OF(color1) + BLUE_OF(color2);
-	return clip_color(r, g, b);
+    return clip_color(r, g, b);
 }
 
 static void convert_rgb_to_hsi(float r, float g, float b, float* h, float* s, float* i) {
-	float min = fminf(fminf(r, g), b);
-	float max = fmaxf(fmaxf(r, g), b);
+    float min = fminf(fminf(r, g), b);
+    float max = fmaxf(fmaxf(r, g), b);
     float diff = max - min;
-	*i = r + g + b;
-	if(diff == 0) {
-		*h = 0.0;
-		*s = 0.0;
-	}
-	else {
-		if(max==r) {
-			*h = fmodf(((g - b) / diff), 6.0f);
-		}
-		else if(max == g) {
-			*h = (b - r) / diff + 2.0f;
-		}
-		else if(max==b) {
-			*h = (r - g) / diff + 4.0f;
-		}
-		*h *= 60.0f;
-		*s = 1.0f - (min / *i);
-	}
+    *i = r + g + b;
+    if(diff == 0) {
+        *h = 0.0;
+        *s = 0.0;
+    }
+    else {
+        if(max==r) {
+            *h = fmodf(((g - b) / diff), 6.0f);
+        }
+        else if(max == g) {
+            *h = (b - r) / diff + 2.0f;
+        }
+        else if(max==b) {
+            *h = (r - g) / diff + 4.0f;
+        }
+        *h *= 60.0f;
+        *s = 1.0f - (min / *i);
+    }
 }
 
 static void convert_hsv_to_rgb(float h, float s, float v, float* r, float* g, float* b) {
@@ -675,26 +675,26 @@ static void convert_hsv_to_rgb(float h, float s, float v, float* r, float* g, fl
 
 static void draw_lcd(void) {
     // The whole transparent area
-	float r = RED_OF(lcd_base_color) / 255.0f;
-	float g = GREEN_OF(lcd_base_color) / 255.0f;
-	float b = BLUE_OF(lcd_base_color) / 255.0f;
-	float h, s, i;
-	convert_rgb_to_hsi(r, g, b, &h, &s, &i);
+    float r = RED_OF(lcd_base_color) / 255.0f;
+    float g = GREEN_OF(lcd_base_color) / 255.0f;
+    float b = BLUE_OF(lcd_base_color) / 255.0f;
+    float h, s, i;
+    convert_rgb_to_hsi(r, g, b, &h, &s, &i);
 
-	// Scale with the current brightness, so we don't emulate brightness control here
-	float lcd_brightness = lcd_get_backlight_brightness() / 255.0f;
-	i /= lcd_brightness;
+    // Scale with the current brightness, so we don't emulate brightness control here
+    float lcd_brightness = lcd_get_backlight_brightness() / 255.0f;
+    i /= lcd_brightness;
 
-	// Let the intensity vary between the base intensity and 1.0
-	i *= (1.0f - lcd_base_intensity);
-	i = lcd_base_intensity + i;
-	i = fminf(i, 1.0f);
+    // Let the intensity vary between the base intensity and 1.0
+    i *= (1.0f - lcd_base_intensity);
+    i = lcd_base_intensity + i;
+    i = fminf(i, 1.0f);
 
-	convert_hsv_to_rgb(h, s, i, &r, &g, &b);
-	color_t color = RGB2COLOR((uint8_t)(r * 255.0f), (uint8_t)(g * 255.0f), (uint8_t)(b * 255.0f));
-	color_t color_with_alpha = multiply_color(color, 1.0f - lcd_alpha);
+    convert_hsv_to_rgb(h, s, i, &r, &g, &b);
+    color_t color = RGB2COLOR((uint8_t)(r * 255.0f), (uint8_t)(g * 255.0f), (uint8_t)(b * 255.0f));
+    color_t color_with_alpha = multiply_color(color, 1.0f - lcd_alpha);
 
-	draw_triangles(lcd_vertex_buffer, 6, color);
+    draw_triangles(lcd_vertex_buffer, 6, color);
     // The LCD lit area
     draw_triangles_with_offset(lcd_vertex_buffer, 6, 6,
             add_color(color_with_alpha, lcd_lit_color));
