@@ -392,9 +392,6 @@ int main(void) {
         exit(EXIT_FAILURE);
     };
     printf("OpenGL Version %d.%d loaded\n", GLVersion.major, GLVersion.minor);
-    GLuint vertex_array;
-    glGenVertexArrays(1, &vertex_array);
-    glBindVertexArray(vertex_array);
     load_shaders();
 
     create_keyboard_vertex_buffer();
