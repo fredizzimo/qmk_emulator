@@ -195,6 +195,9 @@ static void create_key_vertex_buffers(void) {
     glGenBuffers(1, &key_inner_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, key_inner_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, key_inner_vertex_buffer_size * sizeof(GLfloat), inner_vertex_data, GL_STATIC_DRAW);
+
+    key_inner_vertex_buffer_size /= 2;
+    key_outer_vertex_buffer_size /= 2;
 }
 
 static void create_lcd_vertex_buffer(void) {
