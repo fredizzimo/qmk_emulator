@@ -432,7 +432,6 @@ int main(void) {
     uint8_t layer_state = 0;
     uint8_t mods = 0;
     uint8_t leds = 0;
-    ergodox_right_led_1_on();
 
     while (!glfwWindowShouldClose(window)) {
         visualizer_update(default_layer_state, layer_state, mods, leds);
