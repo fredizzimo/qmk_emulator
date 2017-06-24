@@ -740,7 +740,7 @@ static void draw_leds(void) {
     for (int i=0;i<num_keys;i++) {
         if (keys[i].size == 0)
             continue;
-        int luma = LUMA_OF(pixels[i]);
+        int luma = pixels[i] & 0xFF;
         glUniform1f(current_program->intensity_location, luma / 255.0f);
         draw_triangles_with_offset(led_vertex_buffer, 6, buffer_pos, RGB2COLOR(0, 0, 255));
         buffer_pos += 6;
