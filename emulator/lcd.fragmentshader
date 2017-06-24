@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #version 120
 
 uniform vec3 element_color;
-in vec2 UV;
+varying vec2 UV;
 
 uniform sampler2D texture_sampler;
 

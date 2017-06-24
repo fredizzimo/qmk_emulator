@@ -45,6 +45,7 @@ typedef struct {
     GLuint texture_sampler_location;
     GLuint intensity_location;
     GLuint pos_location;
+    GLuint uv_location;
 }program_t;
 
 typedef struct {
@@ -358,6 +359,8 @@ static void load_shaders(void) {
     lcd_program.keyboard_position_location = glGetUniformLocation(program_id, "keyboard_location");
     lcd_program.texture_sampler_location = glGetUniformLocation(program_id, "texture_sampler");
     lcd_program.element_color_location = glGetUniformLocation(program_id, "element_color");
+    lcd_program.pos_location = glGetAttribLocation(program_id, "vertex_position_modelspace");
+    lcd_program.uv_location = glGetAttribLocation(program_id, "vertexUV");
 
     program_id = led_program.program_id;
     led_program.view_projection_location = glGetUniformLocation(program_id, "view_projection");
@@ -531,26 +534,27 @@ static void draw_lcd_texture(GLuint offset, color_t color) {
     use_program(&lcd_program);
 
     offset = offset * sizeof(GLfloat) * 2;
-    glEnableVertexAttribArray(0);
+    glEnable(GL_TEXTURE_2D);
     glBindBuffer(GL_ARRAY_BUFFER, lcd_vertex_buffer);
     glVertexAttribPointer(
-       0,                  // attribute
+       lcd_program.pos_location, // attribute
        2,                  // size
        GL_FLOAT,           // type
        GL_FALSE,           // normalized?
        0,                  // stride
        (void*)(intptr_t)offset           // array buffer offset
     );
-    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(lcd_program.pos_location);
     glBindBuffer(GL_ARRAY_BUFFER, lcd_uv_buffer);
     glVertexAttribPointer(
-        1,                                // attribute.
+        lcd_program.uv_location,          // attribute.
         2,                                // size : U+V => 2
         GL_FLOAT,                         // type
         GL_FALSE,                         // normalized?
         0,                                // stride
         (void*)0                          // array buffer offset
     );
+    glEnableVertexAttribArray(lcd_program.uv_location);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, lcd_texture);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, lcd_pixel_area_size.x, lcd_pixel_area_size.y, GL_BGRA, GL_UNSIGNED_BYTE, getEmulatorPixmap(lcd));
@@ -563,6 +567,7 @@ static void draw_lcd_texture(GLuint offset, color_t color) {
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
 }
 
 static void draw_triangles(GLuint vertex_buffer, GLuint vertex_buffer_size, color_t color) {
