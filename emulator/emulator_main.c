@@ -353,6 +353,7 @@ static void load_shaders(void) {
     keyboard_program.view_projection_location = glGetUniformLocation(program_id, "view_projection");
     keyboard_program.keyboard_position_location = glGetUniformLocation(program_id, "keyboard_location");
     keyboard_program.element_color_location = glGetUniformLocation(program_id, "element_color");
+    keyboard_program.pos_location = glGetAttribLocation(program_id, "vertex_position_modelspace");
 
     program_id = lcd_program.program_id;
     lcd_program.view_projection_location = glGetUniformLocation(program_id, "view_projection");
@@ -367,6 +368,9 @@ static void load_shaders(void) {
     led_program.keyboard_position_location = glGetUniformLocation(program_id, "keyboard_location");
     led_program.element_color_location = -1;
     led_program.intensity_location = glGetUniformLocation(program_id, "intensity");
+    led_program.pos_location = glGetAttribLocation(program_id, "vertex_position_modelspace");
+    led_program.uv_location = glGetAttribLocation(program_id, "vertexUV");
+
 
     program_id = debug_program.program_id;
     debug_program.view_projection_location = glGetUniformLocation(program_id, "view_projection");
@@ -495,7 +499,7 @@ static void draw_main_keyboard_area(void) {
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, keyboard_vertex_buffer);
     glVertexAttribPointer(
-       0,                  // attribute
+       current_program->pos_location, // attribute
        2,                  // size
        GL_FLOAT,           // type
        GL_FALSE,           // normalized?
@@ -507,15 +511,15 @@ static void draw_main_keyboard_area(void) {
     float b = BLUE_OF(main_keyboard_area_color) / 255.0f;
     glUniform3f(current_program->element_color_location, r, g, b);
     glDrawArrays(GL_TRIANGLE_FAN, 0, sizeof(keyboard_vertex_data) / sizeof(GLfloat) / 2);
-    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(current_program->pos_location);
 }
 
 static void draw_triangles_with_offset(GLuint vertex_buffer, GLuint vertex_buffer_size, GLuint offset, color_t color) {
     offset = offset * sizeof(GLfloat) * 2;
-    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(current_program->pos_location);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     glVertexAttribPointer(
-       0,                  // attribute
+       current_program->pos_location,  // attribute
        2,                  // size
        GL_FLOAT,           // type
        GL_FALSE,           // normalized?
@@ -564,8 +568,8 @@ static void draw_lcd_texture(GLuint offset, color_t color) {
     float b = BLUE_OF(color) / 255.0f;
     glUniform3f(current_program->element_color_location, r, g, b);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(lcd_program.pos_location);
+    glDisableVertexAttribArray(lcd_program.pos_location);
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 }
@@ -718,10 +722,10 @@ static void draw_leds(void) {
     use_program(&led_program);
     glEnable (GL_BLEND);
     glBlendFunc (GL_ONE, GL_ONE);
-    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(led_program.uv_location);
     glBindBuffer(GL_ARRAY_BUFFER, lcd_uv_buffer);
     glVertexAttribPointer(
-        1,                                // attribute.
+        led_program.uv_location,          // attribute.
         2,                                // size : U+V => 2
         GL_FLOAT,                         // type
         GL_FALSE,                         // normalized?
@@ -741,7 +745,7 @@ static void draw_leds(void) {
         draw_triangles_with_offset(led_vertex_buffer, 6, buffer_pos, RGB2COLOR(0, 0, 255));
         buffer_pos += 6;
     }
-    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(led_program.uv_location);
     glDisable(GL_BLEND);
 }
 

@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 uniform vec3 element_color;
 uniform float intensity;
 uniform vec3 pos;
-in vec2 UV;
+varying vec2 UV;
 
 const float min_intensity = 0.5 / 255.0;
 const float max_intensity = 2.0;
