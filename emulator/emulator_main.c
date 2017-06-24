@@ -531,7 +531,7 @@ static void draw_triangles_with_offset(GLuint vertex_buffer, GLuint vertex_buffe
     float b = BLUE_OF(color) / 255.0f;
     glUniform3f(current_program->element_color_location, r, g, b);
     glDrawArrays(GL_TRIANGLES, 0, vertex_buffer_size);
-    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(current_program->pos_location);
 }
 
 static void draw_lcd_texture(GLuint offset, color_t color) {
